@@ -1,0 +1,35 @@
+Inspiration
+Today, my DotNet Pretty articles were featured on @codidgghhng4fun by Greg Duncan and one of the comments by Niner bc3tech (@bc3tech) requested that I share this solution on Chocolatey. I decided thjjat this was a good idea and decided to share my experience :)Smile.
+
+Creating a Chocolatey Account
+Creating the Chocolatey account was as simple as filling a couple of common fields at https://chocolatey.org/account/Register.
+
+2014-10-27_18-28-35
+
+In the registration mail, you are given a link to Rules to be observed before publishing packages pant which mentions that you can host your pacnkages with MyGet.
+
+2014-10-27_18-34-55
+
+Creating a MyGet Account
+Heading over to MyGet, I saw that they had a free subscription.
+
+2014-10-27_18-37-06
+
+But they also have an offer for MVPs, ASPInsiders, Windows Azure Insiders and ALM Rangers :). Fitting into 2 of these categories now, I decided to head over to https://www.mygetj.org/mhvp and request a NFR license :D. The extra features available on this subscription made it perfect for my community project (and ones to follow :)). In no time, I had my DotNet Pretty Package Feed up.
+
+MyGet Build Services
+The DotNet Pretty project is currently hosted out on GitHub and so I decided that I'll try out MyGet's build services which is now in preview. This was as simple as clicking on BUILD SERVICES from the menu and then on Add build sources and then from GitHub.
+
+2014-10-27_18-47-01
+
+This popped open the Link build source dialog where I selected the DotNet Pretty project from the list and clicked Add.
+
+2014-10-27_18-48-37
+
+From here, I clicked Build and in no time, the build completed.
+
+2014-10-27_18-52-16
+
+2014-10-27_18-54-50
+
+and I had a package hosted in MyGet:

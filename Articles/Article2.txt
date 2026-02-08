@@ -1,0 +1,224 @@
+In this blog, we will understand how to implement Value object design pattern in C#.
+Introduction of Value object design pattern
+Step 1: Making Value object pattern work logically in C#
+Step 2: Value objects should be immutable
+Making it work with HashTable
+Struct as Value Types
+Conclusion about Value object pattern
+Value object VS DTO
+Introduction of Value Object Design Pattern
+Definition: “Value object is an object whose equality is based on the value rather than identity.“
+
+Let us understand the above statement with more clarity. When you create two objects and even if their values are the same, they represent different entities. For example, in the below code, we have created two person objects with the same name “Shiv”.
+
+Hide   Copy Code
+Person PersonfromIndia = new Person();
+ PersonfromIndia.Name = "Shiv";
+ PersonfromIndia.Age = 20;
+ 
+ Person PersonfromNepal = new Person();
+ PersonfromNepal.Name = "Shiv";
+ PersonfromNepal.Age = 20;
+But the first person stays in “India” and the other stays in “Nepal”. So in other words “PersonFromIndia” object is different from “PersonFromNepal” object even if the person’s name and age is the same. In other words, they have DIFFERENT IDENTITIES.
+
+If you try to compare the above C# object, it will return false and this is completely in line shirt with our expectations. You can use the “Equal” method or you can use “==”.
+
+Hide   Copy Code
+if (PersonfromIndia.Equals(PersonfromNepal))
+ {
+                
+ }
+But now consider the below scenario of a money example. We are creating two money objects of 1 rupee value but one is using a paper material and the other is made of steel material.
+
+Image 1
+
+But in this case “OneRupeeCoin” value is equal to “OneRupeeNote” value. So even if the objects are of different instances, they are equal by money value. So if the money and currency type match, both the objects are equal.
+
+Hide   Copy Code
+Money OneRupeeCoin = new Money();
+ OneRupeeCoin.Value = 1;
+ OneRupeeCoin.CurrencyType = "INR";
+ OneRupeeCoin.CurrencyType = "INR";
+ OneRupeeCoin.SerialNo = "A3123JJK332";
+ 
+ Money OneRupeeNote = new Money();
+ OneRupeeNote.Value = 1;
+ OneRupeeCoin.CurrencyType = "INR";
+ OneRupeeCoin.CurrencyType = "INR";
+ OneRupeeNote.Material = "Paper";
+ OneRupeeCoin.SerialNo = "Z2232V4455";
+In other words, value objects when compared are the same when the values of the properties are the same.
+
+Image 2
+
+Implementing Value object pattern in C# is a two step process, so in the further article, let us run through those steps.
+
+Step 1: Making Value Object Pattern Work Logically in C#
+Now for the above “Money” value object to function properly, the below comparison should work both for “Equals” and “==”. But technically, C# does object reference comparison and not value.
+
+Hide   Copy Code
+if (OneRupeeCoin==OneRupeeNote)
+ {
+ Console.WriteLine("They are equal");
+ }
+ if (OneRupeeCoin.Equals(OneRupeeNote))
+ {
+ Console.WriteLine("They are equal");
+ }
+So to achieve the same, we need to override the “equals” methods and overload “==” operator as shown in the code below. You can see now the equality is compared on the base of “Value” and “CurrencyType”. If the “CurrencyType” and “Value” is the same, that means the objects are the same.
+
+Hide   Shrink    Copy Code
+class Money
+     {
+         public override bool Equals(object obj)
+         {
+             var item = obj as Money;
+             if ((item.Value == Value)&&(item.CurrencyType == CurrencyType))
+             {
+                 return true;
+             }
+             return false;
+         }
+         public static bool operator !=(Money money1, Money money2)
+         {
+             if ((money1.Value != money2.Value) &&
+                 (money1.CurrencyType != money2.CurrencyType))
+             {
+                 return true;
+             }
+             return false;
+         }
+         public static bool operator ==(Money money1, Money money2)
+         {
+             if ((money1.Value == money2.Value)&&
+                 (money1.CurrencyType == money1.CurrencyType))
+             {
+                 return true;
+             }
+             return false;
+         }
+     }
+Once the above methods are incorporated, the equality will work on the values and not the reference. This is in synch with the Value object pattern behavior we discussed in the introduction.
+
+Step 2: Value Objects Should Be Immutable
+Now let us say we are using the above money object inside a product class. So you can see we have created two product objects, one for shoes and one for chocolates.
+
+But BY MISTAKE, we have assigned the same “Money” object to both the products. In other words, the money object is now shared between both the products.
+
+Hide   Copy Code
+Product shoes = new Product();
+ shoes.ProductName = "WoodLand";
+ 
+ // Step 1:- Money object set to 100 INR
+ Money Cost = new Money();
+ Cost.CurrencyType = "INR";
+ Cost.Value = 100;
+ shoes.Cost = Cost;
+ 
+ // Step 2 :- the same money  object is modified to 1 value
+ // this affected the shoes cost as well
+ Product Chocolates = new Product();
+ Chocolates.ProductName = "Cadbury";
+ Chocolates.Cost = Cost;
+ Chocolates.Cost.Value = 1;
+ Chocolates.Cost.CurrencyType = "USD";
+So in Step 1, the money object was set to 100 INR and in step 2 it was modified to 1 USD. Step 2 affected the cost of Shoes product as well. This can cause lot of defects and unusual behavior.
+
+A Value “100” cannot be replaced by anything, “100” is “100”. In other words, value objects should be made IMMUTABLE to avoid confusion. In case you are new to the concept of immutability, I would suggest reading this article on C# Immutable objects.
+
+Immutable means once the object is filled with data, that data cannot be changed.
+
+To make the money class immutable is a 2 step process:
+
+Remove the set property.
+Make provisions to set data via constructor.
+Below is the code with comments of both the steps.
+
+Hide   Shrink    Copy Code
+class Money
+    {
+        // Step 1 :- Remove the sets 
+        private readonly double _Value;
+        public double Value
+        {
+            get { return _Value; }
+        }
+        private readonly string _CurrencyType;
+        public string CurrencyType
+        {
+            get { return _CurrencyType; 
+}       }
+        private readonly string _Material;
+        public string Material
+        {
+            get { return _Material; }
+        }
+        // Step 2 :- Pass data via constructor
+        public Money(double _value,
+                     string _currencytype,
+                    string _material)
+        {
+            _Value = _value;
+            _CurrencyType = _currencytype;
+            _Material = _material;
+        }
+}
+Below is the code which shows how the product object will be assigned with money immutable object. This would further avoid changes to the money object and any confusion around the same. Now the money value object of shoes is different from chocolates.
+
+Hide   Copy Code
+Product shoes = new Product();
+ shoes.ProductName = "WoodLand";
+ shoes.Cost = new Money(100, "INR", "Paper");
+ 
+ Product Chocolates = new Product();
+ Chocolates.ProductName = "Cadbury";
+ Chocolates.Cost = new Money(1, "USD", "Coin");
+Making it work with HashTable
+There is one more scenario where we expect Value object to work properly i.e. with Hastable collections. Let us say we add Money object to Hastable collection as shown below.
+
+Hide   Copy Code
+Money m1 = new Money(1, "INR", "Coin");
+Hashtable coll = new Hashtable();
+coll.Add(m1, m1);
+Now I should be able to retrieve the same object bycreating other Money object of the same value type because they are of the same value. In other words the below code should retrieve the “m1” money object without any issues.
+
+Hide   Copy Code
+Money m2 = new Money(1, "INR", "Paper");
+Money m3 = (Money)coll[m2];
+Now Hashtable uses the value from “GetHashCode” to get an object from the collection. So in order to ensure that hash code calculation is same for the combination of value and currency type we need to override the “GetHashCode” function as shown in the below code.
+
+By doing so our money object would work properly with the hashtable collection.
+
+Hide   Copy Code
+class Money
+{
+// Code removed for clarity
+public override int GetHashCode()
+{
+return (_Value +_CurrencyType).GetHashCode();
+}
+}
+Thanks Ajay to point this scenario out https://in.linkedin.com/in/ajay-singala-bb0b771
+
+Struct as Value Types
+Lot of developers use Struct for implementing Value object design pattern and probably due to the technical nature of struct it looks logical as well.  But below are some practical issues I personally faced with struct implementation :-
+
+Mapping with Entity framework.
+Loosing OOP benefits like inheritance.
+Conclusion About Value Object Pattern
+Value objects equality is based on value rather than identity.
+Value objects should be IMMUTABLE to avoid confusion.
+In C# to ensure proper behavior of value object, we need to override “Equals” method and “==” operator.
+Value object VS DTO
+There is lot of confusion around the difference between DTO and Value objects. But comparing them is like comparing apples and oranges. Below is the image which clearly talks about the difference.
+
+Data Transfer Objects	Value Objects
+Motive	Simplify data transfer between layers.	Make objects compare on value rather than references.
+Immutable	Not necessary	Value objects are good candidate for immutability.
+You can read about it more from this SO discussion http://stackoverflow.com/a/33616033/993672
+
+The best way to learn design pattern is by doing a project. Below is a simple customer project in which I have implemented 8 design patterns (Factory Pattern, Lazy Loading, RIP Pattern, Stratergy Pattern, Decorator pattern, Repository, Unit of Work and Template pattern).
+
+Below is the first video of Learn Design pattern in 8 hours.
+
+Image 3

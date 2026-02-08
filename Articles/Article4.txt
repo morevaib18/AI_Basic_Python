@@ -1,0 +1,42 @@
+Introduction
+The inspiration for this blog post was the following set of error messages displayed on an arrivals screen at London, England railway station on Sunday 29th January.
+
+The Inspiration for this Article
+Image 1
+
+A Recipe
+What this shows is a broken arrivals computer system which has been completely over, and badly, engineered for the purpose of displaying information about the arrivals of buses to carry train passengers.
+
+The designers/developers have chosen to build a browser based system with client-side Javascript pulling data asynchronously from a web service. Nothing wrong with that in principal, but for a non-interactive display-only, highly available message board system? I think not, as clearly demonstrated.
+javascript/jquery/HTML/CSS are young, cheap and inexperienced. They have no concept of industrial strength software design. They do not know or care about reliability or maintenance because they'll be off onto the next job or mountain long before their code catastrophically breaks leaving us with the debris. Good luck to the people who have to fix it under enormous pressure from paying customers, irrate investors and frustrated management.
+
+The problems shown here are typical and are spreading like wild fire. People, including customers, project managers, inexperienced technical people, and transport staff, all make the same mistake. They think that the web is all about the browser.
+
+This mistaken belief is responsible for the rise (and soon fall) of browser oriented technology, where software houses, designers and developers around the globe, have resorted to breaking all the rules of industrial strength software development in the belief that browser technologies are current 'best-practice'.
+
+What are these current technologies that are not industrial strength?
+
+Separation of concerns: Client-side script and web services
+Whilst separating display logic from business logic is generally a good principle of software engineering, it is almost impossible to do using the current technologies favoured by the web software development industry today. Client-side code is being implemented in Javascript and is increasingly gaining more and more business logic because changing Javascript is easier that redesigning complex web services. This makes for very unreliable and unmaintainable software, and let us not forget that this business logic is available for all to see.
+
+And what of the display logic? A mixture of HTML, CSS and JQuery is creating code which is utterly unmaintainable and unmanagable, Throw in the mechanism of dealing with the enormous range of web service protocols, document object models (DOM) etc.. and you have a classic spaghetti dish. This is far from the ideal and history teaches us much about what happens when this is the case.
+
+Lowest common denominator web service protocols
+We have gone from WSDL and ASMX to REST and WCF. XML is being replaced with JSON because it is smaller in size and gets around some browser string problems, but you have to use JSONP to get around many other limitations. So, we are now passing complex data as strings! We get no benefit from sharing classes or strongly typed objects. Another recipe for disaster.
+
+Proprietary security protocols
+Each browser/web server combination works differently with different security protocols, and oAuth is hard to do properly. You need some good technology on the back end and a good CRM system to manage developer API keys etc.. Web security is always evolving and requires a lot of knowledge, money and time to master. Many projects simply do not have the budget or experienced staff, so instead developers are implementing their own proprietary security mechanisms, resulting in systems which are very fragile and easily hackable.
+
+In summary, the new emperors clothes do not fit, are badly designed and will be torn to shreds as more and more people will be affected by this madness. Anyone contemplating building line of business (LoB) or safety (or transport) critical web applications using these technogies should really think again, to put it mildly.
+
+Development and maintenance tool immaturity
+For almost thirty years, we have had highly graphical software development tools with more recently intellisense, edit-and-continue, source code analysis tools, memory checkers, garbage collectors etc.. We get almost none of this with Javascript, DOM and JQuery. Developing in these client-side web frameworks is like stepping back in time to a prehistoric age of software development.
+
+Script-kiddie mentality and inexperience
+Many of the people writing this client-side 
+
+Too much focus on web design at the expense of robustness and reliability
+If it looks good, it must be good eh? Wrong! Almost all web designers know absolutely nothing about complex business processes and the provision of reliable data to service those essential business activities. Project managers and customers are easily captivated by something which looks sexy. Web designers know this and use it as a shield to hide the mess that lies beneath the surface.
+
+There are of course many more, but this is a blog-post not a book.
+

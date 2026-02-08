@@ -1,0 +1,13 @@
+4 -- waist
+5 -- trouser
+4 -- sit
+4 -- natural
+8 -- hips
+3 -- cut
+5 -- trousers
+3 -- feel
+3 -- sitting
+3 -- seat
+5 -- fabric
+4 -- crotch
+3 -- rise

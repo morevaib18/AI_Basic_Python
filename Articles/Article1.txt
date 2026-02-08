@@ -1,0 +1,122 @@
+Introduction
+Introduction and goal
+Other LINQ FAQs
+Define LINQ
+How does LINQ help us from the perspective of business objects?
+Can you explain how a basic LINQ query looks like?
+How do we write a LINQ query to search with criteria?
+How can we do a join using a LINQ query?
+How can we do a group by using a LINQ query?
+How can we do an order by using a LINQ query?
+Introduction and goal
+In this section, we will run through the basics of LINQ and then see five basic LINQ queries which you will always need in your project for queries. While looking at the basics, we will also try to learn what problems LINQ solves from the perspective of middle tier business objects.
+
+You can download my 1000 questions and answers .NET book from the link here, I am dead sure you will enjoy it: http://www.questpond.com/SampleDotNetInterviewQuestionBook.zip.
+
+Other LINQ FAQs
+LINQ FAQ Part II: In this FAQ, we will see a basic example of LINQ to SQL, how to define 1-1 and 1-many relationships using LINQ, how we can optimize LINQ queries, execution of Stored Procedures using LINQ, and finally a simple CRUD example using LINQ to SQL: LINQ FAQ Part II.
+
+Define LINQ
+LINQ is a uniform programming model for any kind of data access. LINQ enables you to query and manipulate data independently of data sources. The figure below shows how .NET languages stand over the LINQ programming model and work in a uniform manner over any kind of data source. It’s like a query language which can query any data source and any transform. LINQ also provides full type safety and compile time checking. LINQ can serve as a good entity for the middle tier. So it will sit in between the UI and data access layers.
+
+Image 1
+
+Below is a simple sample of LINQ. We have a collection of data objcountries to which LINQ is making a query with country name ‘India’. The collection objcountries can be any data source: dataset, datareader, XML etc. The figure below shows how ObjCountries can be any data. We then query for CountryCode and loop through it.
+
+Image 2
+
+How does LINQ help us from the perspective of business objects?
+One of the tedious jobs in business objects is parsing and searching object collections. For instance, consider the below figure where we want to search a country by an ID value. What we do is loop through the collection and get the object. Many may argue about keeping a key in a List or Array. Shown below is just a sample. If you want to search using country code and name, list / collection keys will not work with multi-value searches.
+
+Image 3
+
+In other words, using LINQ, we can query business object collections and filter the collections using a single LINQ query.
+
+Can you explain how a basic LINQ query looks like?
+In order to understand a basic query for LINQ, let’s make a small sample project. Let’s take customer data which has customers and orders.
+
+Customer Name	Customer Code	City	Orders
+Khadak	001	Mumbai	
+Shirts
+Socks
+Shiv	002	Delhi	
+Pants
+Raju	003	Mumbai	
+Socks
+Shaam	004	Delhi	
+Shoes
+We have made the data a bit complex by having one customer and multiple orders, in other words we have one to many relationships.
+
+Image 4
+
+So let’s make two classes: the customer class aggregated with a collection of addresses class. Below is how the class structure will look like to accommodate the one to many relationships of customer and multiple addresses.
+
+Image 5
+
+The multiple addresses are the array collection aggregated inside the customer class. Shown below is a code snippet which loads the customer and address collections with hard coded data provided in the above table. Currently it is hardcoded, but this can be loaded from a database or some other source also.
+
+Hide   Copy Code
+clsCustomer[] objCustomer = new clsCustomer[]
+{
+	new clsCustomer{CustomerName="Khadak",customerCode="001",
+	  City="Mumbai",Orders = new clsOrder[] {new clsOrder{ProductName="Shirt"},
+	  new clsOrder{ProductName="Socks"}}},
+	  new clsCustomer{CustomerName="Shiv",customerCode="002",
+	    City="Delhi",Orders = new clsOrder[]{new clsOrder{ProductName="Pants"}}},
+      new clsCustomer{CustomerName="Raju",customerCode="003",
+        City="Mumbai",Orders = new clsOrder[]{new clsOrder{ProductName="Socks"}}},
+      new clsCustomer{CustomerName="Shaam",customerCode="004",
+        City="Delhi",Orders = new clsOrder[]{new clsOrder{ProductName="Shoes"}}}};
+A basic LINQ query looks like something as shown below. It starts with the verb from followed by the data type and the objects, i.e., clsCustomer and obj objects. objCustomer is the collection which has the customer and addresses which we have loaded in the top section. select obj specifies that we need all the values.
+
+Hide   Copy Code
+from clsCustomer obj in objCustomer select obj
+The figure below shows on the right hand side the query in LINQ. In the left hand side, we loop through the object collection.
+
+Image 6
+
+We have made a simple project which demonstrates a basic LINQ query; you can download it to see how it works actually. The figure below shows the execution of the simple query.
+
+Image 7
+
+How do we write a LINQ query to search with criteria?
+We need to put the where clause before the select keyword.
+
+Hide   Copy Code
+return from clsCustomer Obj in objCustomer where Obj.customerCode == "001" select Obj;
+The figure below shows the where clause in action.
+
+Image 8
+
+How to do a join using LINQ query
+Below is a LINQ code snippet for creating joins between object collections. In this case, we are creating a join on customer and orders. If you remember, the order collection was contained in the customer class.
+
+Hide   Copy Code
+return from clsCustomer ObjCust in objCustomer 
+from clsOrder ObjOrder in ObjCust.Orders
+select ObjCust;
+Shown below is the result of a LINQ join query:
+
+Image 9
+
+How can we do a group by using LINQ query?
+The code snippet below shows how a group by query is written using LINQ. You can see we have first created a temp variable GroupTemp and then used the Select clause to return it.
+
+Hide   Copy Code
+var GroupCustomers = from ObjCust in objCustomer
+group ObjCust by ObjCust.City into GroupTemp
+select new {GroupTemp.Key,GroupTemp};
+The image below shows group by in action.
+
+Image 10
+
+How can we do an order by using a LINQ query?
+Order by in LINQ is pretty simple. We just need to insert order by before the Select query.
+
+Hide   Copy Code
+return from clsCustomer ObjCust in objCustomer
+orderby ObjCust.City
+select ObjCust;
+The figure below shows how we have ordered on the city name.
+
+Image 11
